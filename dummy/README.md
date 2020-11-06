@@ -1,0 +1,1 @@
+Based on https://github.com/nginxinc/NGINX-Demos/tree/master/nginx-hello 

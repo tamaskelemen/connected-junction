@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  app:
+    container_name: app
+    build:
+      context: dummy
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:13-alpine
+    links:
+      - app
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=junusr
+      - POSTGRES_PASSWORD=junpwd
+      - POSTGRES_DB=jundb
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    restart: always
+
+  adminer:
+    image: adminer:latest
+    links:
+      - postgres
+    ports:
+      - 8081:8080
+    restart: always
+
+volumes:
+  postgres-volume:
