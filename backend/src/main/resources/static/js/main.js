@@ -27,7 +27,6 @@ var categories = {},
 
 var layersControl = L.control.layers(null, null).addTo(mapview);
 
-// "http://35.205.22.186/api/getAll"
 $.getJSON("http://35.205.22.186/api/getAll", function (data) {
     var geoCoords = [];
     var getGrowths = [];
@@ -45,8 +44,8 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
         var percentage = item/max;
         percentage = percentage.toFixed(3) * 1;
         percentage = Math.sqrt(percentage);
-        percentage += 0.1;
-        percentage *= 100;
+        percentage = percentage * 255;
+        percentage = Math.round(percentage);
         getRgbGrowths.push(percentage);
     });
 
@@ -63,7 +62,7 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
             onEachFeature: function (feature, layer) {
                 layer.setStyle(
                     {
-                        fillColor : "hsla(185, 45%, " + getRgbGrowths[i] + "%, 1)",
+                        fillColor : "rgba(25, 53, " + getRgbGrowths[i] + ", .9)",
                     }
                 );
                 i++;
