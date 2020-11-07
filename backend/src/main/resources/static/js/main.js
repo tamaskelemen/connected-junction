@@ -43,6 +43,7 @@ $(window).on('load', function() {
     setTimeout(
         function () {
             $('.map-path').click(function () {
+                $(this).css({ fill: '#f0f0f0' });
                 $(this).powerTip({});
             });
         },
