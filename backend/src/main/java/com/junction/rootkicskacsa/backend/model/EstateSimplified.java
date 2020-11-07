@@ -46,4 +46,7 @@ public class EstateSimplified {
     @JsonRawValue
     private String unencumberedSalesPrice;
 
+    @JsonRawValue
+    private String coordinates;
+
 }
