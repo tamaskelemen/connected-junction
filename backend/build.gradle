@@ -16,7 +16,7 @@ version '1.0-SNAPSHOT'
 
 generateLombokConfig.enabled = false
 lombok {
-    version = '1.18.12'
+    version = '1.18.14'
 }
 
 repositories {
@@ -28,6 +28,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'de.grundid.opendatalab:geojson-jackson:1.14'
 
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
