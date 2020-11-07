@@ -5,6 +5,7 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 import org.geojson.GeoJsonObject;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -17,6 +18,7 @@ public class RegionGrowthRate {
     @Id
     private String name;
 
+    @Column(columnDefinition="jsonb")
     private GeoJsonObject geoJson;
 
     private Double growthRate;
