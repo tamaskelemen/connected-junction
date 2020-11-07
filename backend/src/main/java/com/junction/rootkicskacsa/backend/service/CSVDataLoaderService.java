@@ -2,8 +2,10 @@ package com.junction.rootkicskacsa.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.model.WaterLastYear;
 import com.junction.rootkicskacsa.backend.model.WaterOverall;
 import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
+import com.junction.rootkicskacsa.backend.repository.WaterLastYearRepository;
 import com.junction.rootkicskacsa.backend.repository.WaterOverallRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,6 +24,7 @@ public class CSVDataLoaderService {
 
     private final RegionGrowthRateRepository repository;
     private final WaterOverallRepository waterOverallRepository;
+    private final WaterLastYearRepository waterLastYearRepository;
 
     private final ObjectMapper mapper;
 
@@ -63,6 +66,28 @@ public class CSVDataLoaderService {
     @SneakyThrows
     private WaterOverall csvToWaterOverall(String[] data) {
         return WaterOverall.builder()
+                .name(data[0])
+                .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
+                .value(Double.valueOf(data[2]))
+                .build();
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void loadWaterLastYear() {
+        waterLastYearRepository.deleteAll();
+        File file = ResourceUtils.getFile("classpath:data/regions/water_lastyear.csv");
+        Path path = file.toPath();
+        Files.readAllLines(path)
+                .stream()
+                .map(line -> line.split(";"))
+                .map(this::csvToWaterLastYear)
+                .forEach(waterLastYearRepository::save);
+    }
+
+    @SneakyThrows
+    private WaterLastYear csvToWaterLastYear(String[] data) {
+        return WaterLastYear.builder()
                 .name(data[0])
                 .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
                 .value(Double.valueOf(data[2]))
