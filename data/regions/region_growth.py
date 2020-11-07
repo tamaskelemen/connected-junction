@@ -69,17 +69,13 @@ for elem in ret:
 
     for poly in polys:
         if poly[0].contains(point):
-            if str(poly[0]) in usedPolys.keys():
-                print(elem[0])
-                print('w')
-                print(usedPolys[str(poly[0])])
-            else:
+            if not str(poly[0]) in usedPolys.keys():
                 usedPolys[str(poly[0])] = elem[0]
                 realRet.append([elem[0], poly[1], elem[1]])
 
-with open('regions_with_growth.csv', 'w+', newline='') as output:
-    wr = csv.writer(output, quoting=csv.QUOTE_ALL, delimiter=";")
+with open('regions_with_growth.csv', 'w+', newline='', encoding='utf8') as output:
     for elem in realRet:
-        wr.writerow(elem)
+        elem[1] = json.dumps(elem[1])
+        output.write(";".join(map(str, elem))+"\n")
 
 
