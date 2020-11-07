@@ -1,5 +1,6 @@
 package com.junction2020.teamname.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class Estate {
     @Id
     private long id;
 
+    @JsonRawValue
     @Column(columnDefinition="jsonb")
     private String data;
 

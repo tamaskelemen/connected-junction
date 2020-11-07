@@ -13,6 +13,9 @@ public class EstateRowMapper implements RowMapper<Estate> {
     @Override
     public Estate mapRow(ResultSet rs, int rowNum) throws SQLException {
         var json = rs.getString("data");
-        return Estate.builder().id(rs.getLong("id")).data(json).build();
+        return Estate.builder()
+          .id(rs.getLong("id"))
+          .data(json)
+          .build();
     }
 }
