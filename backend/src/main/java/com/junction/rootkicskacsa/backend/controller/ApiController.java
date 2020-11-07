@@ -92,9 +92,8 @@ public class ApiController {
     }
 
     @GetMapping(path = "/estatesSimplified", produces = "application/json")
-    public List<EstateSimplified> getEstatesSimplified(@RequestParam(required = false) Integer a, @RequestParam(required = false) Integer b) {
+    public List<EstateSimplified> getEstatesSimplified() {
         try {
-            if (a != null && b != null) return estateRepository.findAllRelevant().subList(a, b);
             return estateRepository.findAllRelevant();
         } catch (Exception ex) {
             log.error("Failed to query simplified estate data", ex);
