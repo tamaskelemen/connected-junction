@@ -1,9 +1,9 @@
-package com.junction2020.teamname.backend.repository.jdbc;
+package com.junction.rootkicskacsa.backend.repository.jdbc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junction2020.teamname.backend.model.RegionGrowthRate;
-import com.junction2020.teamname.backend.repository.RegionGrowthRateRepository;
-import com.junction2020.teamname.backend.repository.jdbc.mapper.RegionGrowthRateRowMapper;
+import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
+import com.junction.rootkicskacsa.backend.repository.jdbc.mapper.RegionGrowthRateRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.jdbc.core.JdbcTemplate;

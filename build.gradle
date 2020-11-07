@@ -1,4 +1,4 @@
-group 'org.example'
+group 'com.junction.rootkicskacsa'
 version '1.0-SNAPSHOT'
 
 allprojects {

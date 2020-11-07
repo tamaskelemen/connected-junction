@@ -1,4 +1,4 @@
-package com.junction2020.teamname.backend.model;
+package com.junction.rootkicskacsa.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Data;

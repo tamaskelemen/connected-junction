@@ -1,8 +1,8 @@
-package com.junction2020.teamname.backend.repository.jdbc;
+package com.junction.rootkicskacsa.backend.repository.jdbc;
 
-import com.junction2020.teamname.backend.model.Estate;
-import com.junction2020.teamname.backend.repository.EstateRepository;
-import com.junction2020.teamname.backend.repository.jdbc.mapper.EstateRowMapper;
+import com.junction.rootkicskacsa.backend.model.Estate;
+import com.junction.rootkicskacsa.backend.repository.EstateRepository;
+import com.junction.rootkicskacsa.backend.repository.jdbc.mapper.EstateRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

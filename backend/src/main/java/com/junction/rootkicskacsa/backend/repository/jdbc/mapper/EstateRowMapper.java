@@ -1,6 +1,6 @@
-package com.junction2020.teamname.backend.repository.jdbc.mapper;
+package com.junction.rootkicskacsa.backend.repository.jdbc.mapper;
 
-import com.junction2020.teamname.backend.model.Estate;
+import com.junction.rootkicskacsa.backend.model.Estate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

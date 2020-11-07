@@ -1,13 +1,11 @@
-package com.junction2020.teamname.backend.controller;
+package com.junction.rootkicskacsa.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junction2020.teamname.backend.model.Estate;
-import com.junction2020.teamname.backend.model.RegionGrowthRate;
-import com.junction2020.teamname.backend.repository.EstateRepository;
-import com.junction2020.teamname.backend.repository.RegionGrowthRateRepository;
-import com.junction2020.teamname.backend.model.Estate;
-import com.junction2020.teamname.backend.repository.EstateRepository;
-import com.junction2020.teamname.backend.service.CSVDataLoaderService;
+import com.junction.rootkicskacsa.backend.model.Estate;
+import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.repository.EstateRepository;
+import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
+import com.junction.rootkicskacsa.backend.service.CSVDataLoaderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class MegaController {
+public class ApiController {
 
     private final CSVDataLoaderService csv;
 

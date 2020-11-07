@@ -1,4 +1,4 @@
-package com.junction2020.teamname.backend.controller;
+package com.junction.rootkicskacsa.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

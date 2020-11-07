@@ -1,7 +1,7 @@
-package com.junction2020.teamname.backend.repository.jdbc.mapper;
+package com.junction.rootkicskacsa.backend.repository.jdbc.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junction2020.teamname.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.geojson.GeoJsonObject;
