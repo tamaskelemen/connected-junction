@@ -1,6 +1,6 @@
-POSTGRES_URL: jdbc:postgresql://localhost:5432/jundb
-POSTGRES_USER: junuser
-POSTGRES_PASSWORD: junpwd
+POSTGRES_URL: jdbc:postgresql://35.241.209.158:5432/junction
+POSTGRES_USER: postgres
+POSTGRES_PASSWORD: asdasd
 
 ---
 
