@@ -15,8 +15,8 @@ import javax.persistence.Id;
 @EqualsAndHashCode
 @Data @NoArgsConstructor
 @Jacksonized @SuperBuilder
-
 public class WaterOverall {
+
     @Id
     private String name;
 
@@ -24,4 +24,5 @@ public class WaterOverall {
     private GeoJsonObject geoJson;
 
     private Double value;
+
 }

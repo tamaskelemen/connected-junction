@@ -1,10 +1,12 @@
 package com.junction.rootkicskacsa.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.Estate;
+import com.junction.rootkicskacsa.backend.model.EstateSimplified;
 import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.model.WaterOverall;
 import com.junction.rootkicskacsa.backend.repository.EstateRepository;
 import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
+import com.junction.rootkicskacsa.backend.repository.WaterOverallRepository;
 import com.junction.rootkicskacsa.backend.service.CSVDataLoaderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +25,9 @@ public class ApiController {
 
     private final CSVDataLoaderService csv;
 
-    private final RegionGrowthRateRepository repository;
+    private final RegionGrowthRateRepository regionGrowthRateRepository;
     private final EstateRepository estateRepository;
-
-    private final ObjectMapper mapper;
+    private final WaterOverallRepository waterOverallRepository;
 
     @GetMapping("/loadRegions")
     public void loadRegions() {
@@ -48,6 +49,7 @@ public class ApiController {
         }
     }
 
+
     @GetMapping("/loadWaterLastYear")
     public void loadWaterLastYear() {
         try {
@@ -58,20 +60,21 @@ public class ApiController {
         }
     }
 
-    @GetMapping(path = "/getAll", produces = "application/json")
-    public List<RegionGrowthRate> getAll() {
+
+    @GetMapping(path = {"/getAll", "/region"}, produces = "application/json")
+    public List<RegionGrowthRate> getAllRegionGrowthRateData() {
         try {
-            return repository.findAll();
+            return regionGrowthRateRepository.findAll();
         } catch (Exception ex) {
             log.error("Failed to query region data", ex);
             throw new ApiException();
         }
     }
 
-    @GetMapping(path = "/getByName", produces = "application/json")
+    @GetMapping(path = {"/getByName", "regionByName"}, produces = "application/json")
     public RegionGrowthRate getByName(@RequestParam String name) {
         try {
-            return repository.findByName(name).get();
+            return regionGrowthRateRepository.findByName(name).get();
         } catch (Exception ex) {
             log.error("Failed to query region data by region name", ex);
             throw new ApiException();
@@ -84,6 +87,28 @@ public class ApiController {
             return estateRepository.findAll();
         } catch (Exception ex) {
             log.error("Failed to query estate data", ex);
+            throw new ApiException();
+        }
+    }
+
+    @GetMapping(path = "/estatesSimplified", produces = "application/json")
+    public List<EstateSimplified> getEstatesSimplified(@RequestParam(required = false) Integer a, @RequestParam(required = false) Integer b) {
+        try {
+            if (a != null && b != null) return estateRepository.findAllRelevant().subList(a, b);
+            return estateRepository.findAllRelevant();
+        } catch (Exception ex) {
+            log.error("Failed to query simplified estate data", ex);
+            throw new ApiException();
+        }
+    }
+
+
+    @GetMapping(path = "/waterOverall", produces = "application/json")
+    public List<WaterOverall> getWaterOverallData() {
+        try {
+            return waterOverallRepository.findAll();
+        } catch (Exception ex) {
+            log.error("Failed to query simplified estate data", ex);
             throw new ApiException();
         }
     }
