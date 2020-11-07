@@ -1,5 +1,4 @@
 package com.junction.rootkicskacsa.backend.model;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,8 +14,7 @@ import javax.persistence.Id;
 @EqualsAndHashCode
 @Data @NoArgsConstructor
 @Jacksonized @SuperBuilder
-public class WaterOverall {
-
+public class WaterLastYear {
     @Id
     private String name;
 
@@ -24,5 +22,4 @@ public class WaterOverall {
     private GeoJsonObject geoJson;
 
     private Double value;
-
 }
