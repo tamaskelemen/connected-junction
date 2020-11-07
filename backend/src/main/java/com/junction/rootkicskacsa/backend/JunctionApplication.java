@@ -1,4 +1,4 @@
-package com.junction2020.teamname.backend;
+package com.junction.rootkicskacsa.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

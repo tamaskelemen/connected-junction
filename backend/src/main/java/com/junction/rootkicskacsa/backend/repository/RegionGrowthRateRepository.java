@@ -1,6 +1,6 @@
-package com.junction2020.teamname.backend.repository;
+package com.junction.rootkicskacsa.backend.repository;
 
-import com.junction2020.teamname.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
 
 import java.util.List;
 import java.util.Optional;
