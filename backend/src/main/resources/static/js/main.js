@@ -31,5 +31,21 @@ $.getJSON("assets/finnland.geojson", function (data) {
             clickable: true
         }
     );
+    geoJsonLayer.setStyle({'className': 'map-path'});
     geoJsonLayer.addTo(mapview);
+});
+
+/**
+ * MAIN
+ */
+$(window).on('load', function() {
+    console.log('Page is ready...');
+    setTimeout(
+        function () {
+            $('.map-path').click(function () {
+                $(this).powerTip({});
+            });
+        },
+        1000
+    );
 });
