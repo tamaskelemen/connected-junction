@@ -8,7 +8,8 @@ var mapview = L.map(
         ],
         minZoom: 5,
         maxZoom: 20,
-        zoom: 13
+        zoom: 13,
+        preferCanvas: true
     }
 );
 
@@ -23,10 +24,14 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 }).addTo(mapview);
 
 var categories = {},
-    category = 'Growth rate';
+    growth_rate = 'Growth rate',
+    real_estate = 'Real estates';
 
 var layersControl = L.control.layers(null, null).addTo(mapview);
 
+/**
+ * GET Growth rate with geo coords
+ */
 $.getJSON("http://35.205.22.186/api/getAll", function (data) {
     var geoCoords = [];
     var getGrowths = [];
@@ -62,30 +67,29 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
             onEachFeature: function (feature, layer) {
                 layer.setStyle(
                     {
-                        fillColor : "rgba(25, 53, " + getRgbGrowths[i] + ", .9)",
+                        fillColor : "rgba(0, 80, " + getRgbGrowths[i] + ", 1)",
                     }
                 );
                 i++;
 
                 var popupText = "<b>" + feature.properties.name + "</b>";
                 layer.bindPopup(popupText);
-                layer.on('mouseover', function (e) {
+                layer.on('mouseover', function () {
                     this.openPopup();
                 });
 
-                if (typeof categories[category] === "undefined") {
-                    categories[category] = L.layerGroup().addTo(mapview);
-                    layersControl.addOverlay(categories[category], category);
+                if (typeof categories[growth_rate] === "undefined") {
+                    categories[growth_rate] = L.layerGroup().addTo(mapview);
+                    layersControl.addOverlay(categories[growth_rate], growth_rate);
                 }
-                categories[category].addLayer(layer);
+                categories[growth_rate].addLayer(layer);
             },
             clickable: true
         }
     );
-    geoJsonLayer.setStyle({'className': 'map-path'});
+    geoJsonLayer.setStyle({className: 'map-path'});
     geoJsonLayer.addTo(mapview);
 });
-
 
 /**
  * MAIN
@@ -94,12 +98,41 @@ $(window).on('load', function() {
     console.log('Page is ready...');
     setTimeout(
         function () {
-            // $(".map-path").click(function () {
-            //      $(this).css({ fill: '#00ff00' });
+            // console.log(1);
+            // $("path").click(function () {
+            //     console.log(231);
+            //     $(this).css({ fill: '#000fff' });
             // });
         },
-        1000
+        2000
     );
+});
+
+/**
+ * count :7871
+ */
+$.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
+    var render = L.canvas();
+    console.log(data);
+    data.forEach(function (item) {
+        if (
+            (item.coordinates != null)
+            && (item.coordinates.Latitude != null)
+            && (item.coordinates.Longitude != null)
+        ) {
+            L.circle(
+                [
+                    item.coordinates.Latitude,
+                    item.coordinates.Longitude
+                ],
+                {
+                    radius: 50,
+                    fillColor: "#ff4500",
+                    color: "#ff4500"
+                }
+            ).addTo(mapview).bindPopup('kcsa');
+        }
+    });
 });
 
 /**
@@ -107,14 +140,30 @@ $(window).on('load', function() {
  */
 $(".switch input[type='checkbox']").click(function () {
     var switcher = $('.switch-label');
+    var properties = $('.properties, .prediction');
+    var charts = $('.charts-container');
 
     if (switcher.text().match(/statistics/)) {
-        switcher.text('Change to details');
-        switcher.addClass('switch-statistics');
-        switcher.removeClass('switch-details');
+        properties.fadeOut(200);
+        setTimeout(
+            function () {
+                charts.fadeIn(200);
+                switcher.text('Change to details');
+                switcher.addClass('switch-statistics');
+                switcher.removeClass('switch-details');
+            },
+            200
+        );
     } else {
-        switcher.text('Change to statistics');
-        switcher.addClass('switch-details');
-        switcher.removeClass('switch-statistics');
+        charts.fadeOut(200);
+        setTimeout(
+            function () {
+                properties.fadeIn(200);
+                switcher.text('Change to statistics');
+                switcher.addClass('switch-details');
+                switcher.removeClass('switch-statistics');
+            },
+            200
+        );
     }
 });
