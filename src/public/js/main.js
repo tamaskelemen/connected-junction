@@ -34,6 +34,7 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
     var getRgbGrowths = [];
 
     data.forEach(function (item) {
+        item['geoJson'].properties.name = item['name'];
         geoCoords.push(item['geoJson']);
         getGrowths.push(item['growthRate']);
     });
@@ -43,31 +44,30 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
     getGrowths.forEach(function (item) {
         var percentage = item/max;
         percentage = percentage.toFixed(3) * 1;
-        percentage = Math.round(percentage * 255);
-        percentage = percentage.toString(16);
-
-        if (percentage.length == 1 ) {
-            percentage = '0' + percentage;
-        }
-
-        var hex = '#66bb' + percentage;
-        getRgbGrowths.push(hex);
+        percentage = Math.sqrt(percentage);
+        percentage += 0.1;
+        percentage *= 100;
+        getRgbGrowths.push(percentage);
     });
+
     var i = 0;
-    console.log(geoCoords);
     var geoJsonLayer = L.geoJson(
         geoCoords,
         {
             style: function () {
                 return {
                     color: '#11aaff55',
-                    fillOpacity: .5
+                    fillOpacity: 0.8
                 };
             },
             onEachFeature: function (feature, layer) {
-                layer.setStyle({fillColor : getRgbGrowths[i]});
+                layer.setStyle(
+                    {
+                        fillColor : "hsla(185, 45%, " + getRgbGrowths[i] + "%, 1)",
+                    }
+                );
                 i++;
-                // console.log(layer)
+
                 var popupText = "<b>" + feature.properties.name + "</b>";
                 layer.bindPopup(popupText);
                 layer.on('mouseover', function (e) {
