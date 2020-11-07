@@ -1,6 +1,6 @@
-POSTGRES_URL: jdbc:postgresql://localhost/jundb
+POSTGRES_URL: jdbc:postgresql://localhost:5432/jundb
 POSTGRES_USER: junuser
-POSTGRES_PASSWORD: junpw
+POSTGRES_PASSWORD: junpwd
 
 ---
 
