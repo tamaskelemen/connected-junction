@@ -1,4 +1,7 @@
 #!/bin/sh
+
+source prod.env
+
 pkill -f 'java -jar'
 git pull
 ./gradlew backend:clean assemble --console=plain
