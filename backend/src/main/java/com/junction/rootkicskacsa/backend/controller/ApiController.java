@@ -1,7 +1,7 @@
 package com.junction.rootkicskacsa.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.Estate;
+import com.junction.rootkicskacsa.backend.model.EstateSimplified;
 import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
 import com.junction.rootkicskacsa.backend.repository.EstateRepository;
 import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
@@ -25,8 +25,6 @@ public class ApiController {
 
     private final RegionGrowthRateRepository repository;
     private final EstateRepository estateRepository;
-
-    private final ObjectMapper mapper;
 
     @GetMapping("/loadRegions")
     public void loadRegions() {
@@ -74,6 +72,16 @@ public class ApiController {
             return estateRepository.findAll();
         } catch (Exception ex) {
             log.error("Failed to query estate data", ex);
+            throw new ApiException();
+        }
+    }
+
+    @GetMapping(path = "/estatesSimplified", produces = "application/json")
+    public List<EstateSimplified> getEstatesSimplified() {
+        try {
+            return estateRepository.findAllRelevant();
+        } catch (Exception ex) {
+            log.error("Failed to query simplified estate data", ex);
             throw new ApiException();
         }
     }
