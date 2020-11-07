@@ -40,7 +40,7 @@ public class JDBCEstateRepository implements EstateRepository {
           "data -> 'RentPerMonth' as rent_per_month, " +
           "data -> 'BuildingPlanSituation' as building_plan_situation, " +
           "data -> 'UnencumberedSalesPrice' as unencumbered_sales_price, " +
-          "data -> 'Location' ->> 'Coordinates' as location_coordinates" +
+          "data -> 'Location' ->> 'Coordinates' as location_coordinates " +
         "from estates;";
 
         return jdbc.query(sql, (row, i) -> EstateSimplified.builder()
