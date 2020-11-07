@@ -38,6 +38,16 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/loadWaterOverall")
+    public void loadWaterOverall() {
+        try {
+            csv.loadWaterOverall();
+        } catch (Exception ex) {
+            log.error("Failed to load region data", ex);
+            throw new ApiException();
+        }
+    }
+
     @GetMapping(path = "/getAll", produces = "application/json")
     public List<RegionGrowthRate> getAll() {
         try {

@@ -2,7 +2,9 @@ package com.junction.rootkicskacsa.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
+import com.junction.rootkicskacsa.backend.model.WaterOverall;
 import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
+import com.junction.rootkicskacsa.backend.repository.WaterOverallRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.geojson.GeoJsonObject;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 public class CSVDataLoaderService {
 
     private final RegionGrowthRateRepository repository;
+    private final WaterOverallRepository waterOverallRepository;
 
     private final ObjectMapper mapper;
 
@@ -41,6 +44,28 @@ public class CSVDataLoaderService {
                 .name(data[0])
                 .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
                 .growthRate(Double.valueOf(data[2]))
+                .build();
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void loadWaterOverall() {
+        waterOverallRepository.deleteAll();
+        File file = ResourceUtils.getFile("classpath:data/regions/water_overall.csv");
+        Path path = file.toPath();
+        Files.readAllLines(path)
+                .stream()
+                .map(line -> line.split(";"))
+                .map(this::csvToWaterOverall)
+                .forEach(waterOverallRepository::save);
+    }
+
+    @SneakyThrows
+    private WaterOverall csvToWaterOverall(String[] data) {
+        return WaterOverall.builder()
+                .name(data[0])
+                .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
+                .value(Double.valueOf(data[2]))
                 .build();
     }
 }
