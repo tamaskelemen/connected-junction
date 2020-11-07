@@ -42,7 +42,7 @@ public class MegaController {
         }
     }
 
-    @GetMapping("/getAll")
+    @GetMapping(path = "/getAll", produces = "application/json")
     public List<RegionGrowthRate> getAll() {
         try {
             return repository.findAll();
@@ -52,7 +52,7 @@ public class MegaController {
         }
     }
 
-    @GetMapping("/getByName")
+    @GetMapping(path = "/getByName", produces = "application/json")
     public RegionGrowthRate getByName(@RequestParam String name) {
         try {
             return repository.findByName(name).get();

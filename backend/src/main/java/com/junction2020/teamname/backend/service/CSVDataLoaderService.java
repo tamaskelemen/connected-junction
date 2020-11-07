@@ -29,7 +29,7 @@ public class CSVDataLoaderService {
         repository.deleteAll();
         File file = ResourceUtils.getFile("classpath:data/regions/regions_with_growth.csv");
         Path path = file.toPath();
-        Files.readAllLines(path, StandardCharsets.ISO_8859_1)
+        Files.readAllLines(path)
                 .stream()
                 .map(line -> line.split(";"))
                 .map(this::csvToRegionGrowthRate)
