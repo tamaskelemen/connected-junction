@@ -1,8 +1,15 @@
 package com.junction2020.teamname.backend.repository;
 
 import com.junction2020.teamname.backend.model.RegionGrowthRate;
-import org.springframework.data.repository.CrudRepository;
 
-public interface RegionGrowthRateRepository extends CrudRepository<RegionGrowthRate, String> {
+import java.util.List;
+import java.util.Optional;
+
+public interface RegionGrowthRateRepository {
+
+    List<RegionGrowthRate> findAll();
+    Optional<RegionGrowthRate> findByName(String name);
+    void save(RegionGrowthRate region);
+    void deleteAll();
 
 }
