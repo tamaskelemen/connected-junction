@@ -1,8 +1,12 @@
 package com.junction2020.teamname.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junction2020.teamname.backend.model.Estate;
 import com.junction2020.teamname.backend.model.RegionGrowthRate;
+import com.junction2020.teamname.backend.repository.EstateRepository;
 import com.junction2020.teamname.backend.repository.RegionGrowthRateRepository;
+import com.junction2020.teamname.backend.model.Estate;
+import com.junction2020.teamname.backend.repository.EstateRepository;
 import com.junction2020.teamname.backend.service.CSVDataLoaderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,7 @@ public class MegaController {
     private final CSVDataLoaderService csv;
 
     private final RegionGrowthRateRepository repository;
+    private final EstateRepository estateRepository;
 
     private final ObjectMapper mapper;
 
@@ -57,7 +62,14 @@ public class MegaController {
         }
     }
 
-    private <T> Stream<T> toStream(Iterable<T> iterable) {
-        return StreamSupport.stream(iterable.spliterator(), false);
+    @GetMapping("/estates")
+    public List<Estate> estates()
+    {
+        try {
+            return estateRepository.findAll();
+        } catch (Exception ex) {
+            log.error("Failed to query region data by region name", ex);
+            throw new ApiException();
+        }
     }
 }
