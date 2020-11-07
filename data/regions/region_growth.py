@@ -32,7 +32,7 @@ for norm in [float(i)/sum(growth_rates) for i in growth_rates]:
     ret.append([data[i][0], norm])
     i = i+1
 
-gmaps = googlemaps.Client(key='AIzaSyBGCEe8twgn6P27clxvQNNYnsvZQEXlTNQ')
+gmaps = googlemaps.Client(key='')
 
 realRet = []
 
