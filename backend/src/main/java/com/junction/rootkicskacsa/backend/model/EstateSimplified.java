@@ -13,10 +13,8 @@ public class EstateSimplified {
     private Long id;
     private Long objectId;
 
-    @JsonRawValue
     private String housingCoating;
 
-    @JsonRawValue
     private String housingNumberOfRooms;
 
     @JsonRawValue
