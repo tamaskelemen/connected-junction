@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source prod.env
+. prod.env
 
 pkill -f 'java -jar'
 git pull
