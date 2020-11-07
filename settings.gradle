@@ -1,0 +1,3 @@
+rootProject.name = 'connected-junction'
+include 'backend'
+

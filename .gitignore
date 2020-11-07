@@ -1,0 +1,4 @@
+.idea
+.gradle
+/backend/build/
+application-prod-secret.yml
