@@ -9,6 +9,7 @@ import org.geojson.GeoJsonObject;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,12 +17,13 @@ import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
-public class CSVDataLoader {
+public class CSVDataLoaderService {
 
     private final RegionGrowthRateRepository repository;
 
     private final ObjectMapper mapper;
 
+    @Transactional
     @SneakyThrows
     public void loadRegionsWithGrowthRate() {
         repository.deleteAll();

@@ -1,6 +1,8 @@
 package com.junction2020.teamname.backend.model;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 import org.geojson.GeoJsonObject;
