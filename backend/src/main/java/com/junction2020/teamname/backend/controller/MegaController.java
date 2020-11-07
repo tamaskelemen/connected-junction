@@ -62,13 +62,12 @@ public class MegaController {
         }
     }
 
-    @GetMapping("/estates")
-    public List<Estate> estates()
-    {
+    @GetMapping(path = "/estates", produces = "application/json")
+    public List<Estate> getEstates() {
         try {
             return estateRepository.findAll();
         } catch (Exception ex) {
-            log.error("Failed to query region data by region name", ex);
+            log.error("Failed to query estate data", ex);
             throw new ApiException();
         }
     }

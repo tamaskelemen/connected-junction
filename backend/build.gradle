@@ -42,6 +42,10 @@ dependencies {
     }
 }
 
+bootRun {
+    systemProperties['spring.profiles.active'] = 'dev'
+}
+
 test {
     useJUnitPlatform()
 }
