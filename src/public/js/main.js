@@ -109,28 +109,145 @@ $(window).on('load', function() {
 });
 
 /**
- * count :7871
+ * Estates
  */
 $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
-    var render = L.canvas();
-    console.log(data);
     data.forEach(function (item) {
         if (
             (item.coordinates != null)
             && (item.coordinates.Latitude != null)
             && (item.coordinates.Longitude != null)
         ) {
+            var energy_class = '',
+                plan = '',
+                coating = '',
+                rooms = '',
+                area = '',
+                renovation = '',
+                rent = '',
+                price = '',
+                unencrumbed_price = '';
+
+
+            if (item.buildingEnergyClass != null && item.buildingEnergyClass['@class'] != null) {
+                energy_class = item.buildingEnergyClass['@class'];
+            }
+
+            if (item.buildingPlanSituation != null && item.buildingPlanSituation.length < 30) {
+                plan = item.buildingPlanSituation;
+            }
+
+            if (item.housingCoating != null) {
+                // coating = item.housingCoating;
+            }
+
+            if (item.housingNumberOfRooms != null) {
+                rooms = item.housingNumberOfRooms;
+            }
+
+            if (item.housingTotalArea != null && item.housingTotalArea['@size'] != null && item.housingTotalArea['@unit'] != null) {
+                area = item.housingTotalArea['@size'] + item.housingTotalArea['@unit'];
+            }
+
+            if (item.renovations != null) {
+                if (item.renovations.Accepted != null) {
+                    // renovation += item.renovations.Accepted + ',';
+                }
+
+                if (item.renovations.Done != null) {
+                    // renovation += item.renovations.Done + ',';
+                }
+
+                if (item.renovations.OtherKnown != null) {
+                    // renovation += item.renovations.OtherKnown + ',';
+                }
+            }
+
+            if (item.rentPerMonth != null && item.rentPerMonth['@currency'] != null && item.rentPerMonth['@unit'] != null && item.rentPerMonth['@value'] != null) {
+                rent = item.rentPerMonth['@value'] + item.rentPerMonth['@currency'] + ' per ' + item.rentPerMonth['@unit'];
+            }
+
+            if (item.salesPrice != null && item.salesPrice['@currency'] != null && item.salesPrice['@value'] != null) {
+                price = item.salesPrice['@value'] + item.salesPrice['@currency'];
+            }
+            
+            if (item.unencumberedSalesPrice != null && item.unencumberedSalesPrice['@currency'] != null && item.unencumberedSalesPrice['@value'] != null) {
+                unencrumbed_price = item.unencumberedSalesPrice['@value'] + item.unencumberedSalesPrice['@currency'];
+            }
+
+            var markup = "<div>";
+
+            if (energy_class != '' && energy_class != ' ') {
+                markup += "<p class='buildingEnergyClass'>Energy class: " + energy_class + "</p>";
+            }
+
+            if (plan != '' && plan != ' ') {
+                markup += "<p class='buildingPlanSituation'>Plan: " + plan + "</p>";
+            }
+
+            if (coating != '' && coating != ' ') {
+                markup += "<p class='housingCoating'>Coating: " + coating + "</p>";
+            }
+
+            if (rooms != '' && rooms != ' ') {
+                markup += "<p class='housingNumberOfRooms'>Rooms: " + rooms + "</p>";
+            }
+
+            if (area != '' && area != ' ') {
+                markup += "<p class='housingTotalArea'>Area: " + area + "</p>";
+            }
+
+            if (renovation != '' && renovation != ' ') {
+                markup += "<p class='renovations'>Renovation: " + renovation + "</p>";
+            }
+
+            if (rent != '' && rent != ' ') {
+                markup += "<p class='rentPerMonth'>Rent: " + rent + "</p>";
+            }
+
+            if (price != '' && price != ' ') {
+                markup += "<p class='salesPrice'>Price: " + price + "</p>";
+            }
+
+            if (unencrumbed_price != '' && unencrumbed_price != ' ') {
+                markup += "<p class='unencumberedSalesPrice'>Unencumbered price: " + unencrumbed_price + "</p>";
+            }
+
+            markup += "</div>";
+            markup = markup.replace(/NaN/g, '');
             L.circle(
                 [
                     item.coordinates.Latitude,
                     item.coordinates.Longitude
                 ],
                 {
+                    opacity: 1,
                     radius: 50,
                     fillColor: "#ff4500",
-                    color: "#ff4500"
-                }
-            ).addTo(mapview).bindPopup('kcsa');
+                    color: "#ff4500",
+                    data: {
+                        buildingEnergyClass: energy_class,
+                        buildingPlanSituation: plan,
+                        housingCoating: coating,
+                        housingNumberOfRooms: rooms,
+                        housingTotalArea: area,
+                        renovations: renovation,
+                        rentPerMonth: rent,
+                        salesPrice: price,
+                        unencumberedSalesPrice: unencrumbed_price
+                    }
+                },
+            )
+                .addTo(mapview)
+                .bringToFront()
+                .bindPopup(markup)
+                .on("click", function () {
+                    var data = this.options.data;
+                    console.log()
+                    for (const [key, value] of Object.entries(data)) {
+                        $('.' + key + ' span:nth-child(2)').text(value);
+                    }
+                });
         }
     });
 });
