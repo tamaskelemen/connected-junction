@@ -369,16 +369,6 @@ $.getJSON("http://35.205.22.186/api/electricityOverall", function (data) {
  */
 $(window).on('load', function() {
     console.log('Page is ready...');
-    setTimeout(
-        function () {
-            // console.log(1);
-            // $("path").click(function () {
-            //     console.log(231);
-            //     $(this).css({ fill: '#000fff' });
-            // });
-        },
-        2000
-    );
 });
 
 /**
@@ -559,7 +549,6 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                     });
 
                     $.getJSON("http://35.205.22.186/api/estatePredictions?objectId=" + data.objectId, function (result) {
-                        console.log(123);
                         for (const [key, object] of Object.entries(result)) {
                             if (object.value != null) {
                                 object.value *= 100;
