@@ -80,6 +80,16 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/loadHeatOverall")
+    public void loadHeatOverall() {
+        try {
+            csv.loadHeatOverall();
+        } catch (Exception ex) {
+            log.error("Failed to load heat data", ex);
+            throw new ApiException();
+        }
+    }
+
     @GetMapping(path = {"/getAll", "/region"}, produces = "application/json")
     public List<RegionGrowthRate> getAllRegionGrowthRateData() {
         try {
