@@ -24,9 +24,10 @@ public class RegionGrowthRateRowMapper implements RowMapper<RegionGrowthRate> {
         var json = rs.getString("geo_json");
 
         return RegionGrowthRate.builder()
-                .name(rs.getString("name"))
-                .geoJson(mapper.readValue(json, GeoJsonObject.class))
-                .growthRate(rs.getDouble("growth_rate"))
-                .build();
+          .name(rs.getString("name"))
+          .geoJson(mapper.readValue(json, GeoJsonObject.class))
+          .growthRate(rs.getDouble("growth_rate"))
+          .predictedGrowthRate(rs.getDouble("predicted_growth_rate"))
+          .build();
     }
 }

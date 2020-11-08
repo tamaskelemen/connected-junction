@@ -24,5 +24,6 @@ public class RegionGrowthRate {
     private GeoJsonObject geoJson;
 
     private Double growthRate;
+    private Double predictedGrowthRate;
 
 }

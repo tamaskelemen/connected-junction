@@ -1,5 +1,6 @@
 package com.junction.rootkicskacsa.backend.repository.jdbc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.Estate;
 import com.junction.rootkicskacsa.backend.model.EstateSimplified;
 import com.junction.rootkicskacsa.backend.repository.EstateRepository;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,6 +19,8 @@ public class JDBCEstateRepository implements EstateRepository {
     private final JdbcTemplate jdbc;
 
     private final EstateRowMapper rowMapper;
+
+    private final ObjectMapper objectMapper;
 
     @Override
     public List<Estate> findAll() {
@@ -60,5 +64,14 @@ public class JDBCEstateRepository implements EstateRepository {
           .coordinates(row.getString("location_coordinates"))
           .buildingYearOfFirstUse(row.getInt("building_year_of_first_use"))
           .build());
+    }
+
+    public Optional<String> getPhotoUrl() {
+        String sql = "select data->'Links'->'Pictures'->'Picture' as pictures from estates;";
+        jdbc.query(sql, (row, i) -> {
+            System.out.println();
+            return "";
+        });
+        return Optional.empty();
     }
 }
