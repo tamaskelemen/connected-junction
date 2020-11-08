@@ -11,7 +11,7 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
+group 'com.junction.rootkicskacsa'
 version '1.0-SNAPSHOT'
 
 generateLombokConfig.enabled = false
@@ -30,6 +30,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.apache.commons:commons-lang3:3.11'
+
+    implementation "com.fasterxml.jackson.core:jackson-core:2.11.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.11.0"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:2.11.0"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.0"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.0"
     implementation 'de.grundid.opendatalab:geojson-jackson:1.14'
 
     implementation 'org.slf4j:slf4j-api:1.7.30'
@@ -40,6 +46,10 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+}
+
+bootRun {
+    systemProperties['spring.profiles.active'] = 'dev'
 }
 
 test {

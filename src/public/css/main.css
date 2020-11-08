@@ -14,17 +14,58 @@ body {
 
 #sidebar {
     position: fixed;
-    background-color: rgba(0, 47, 108, 0.3);
+    background-color: #f5f5f5;
     right: 0;
-    width: 360px;
+    width: 328px;
     height: 100%;
+    padding: 16px;
     -webkit-box-shadow: -2px 3px 13px 0 rgba(50, 50, 50, 0.75);
     -moz-box-shadow: -2px 3px 13px 0 rgba(50, 50, 50, 0.75);
     box-shadow: -2px 3px 13px 0 rgba(50, 50, 50, 0.75);
 }
 
+.sidebar-switcher {
+    margin: 0 0 24px 0;
+    padding: 12px;
+    border: 1px solid gray;
+    border-radius: 12px;
+    box-shadow: 2px 2px 5px 0 gray;
+}
+
+.properties {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin: 0 0 24px 0;
+    border: 1px solid gray;
+    border-radius: 12px;
+    box-shadow: 2px 2px 5px 0 gray;
+}
+
+.properties_header {
+    text-align: center;
+    font-weight: bold;
+}
+
+.properties_property {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 12px;
+    border-bottom: 1px solid #2196F3;
+}
+
+.properties_property span {
+    width: 50%;
+}
+
+.properties_property span:nth-child(2) {
+    text-align: right;
+}
+
 .switch-label {
     text-align: center;
+    font-weight: bold;
 }
 
 .switch {
@@ -59,7 +100,7 @@ body {
     position: absolute;
     height: 26px;
     width: 26px;
-    left: 0;
+    left: 4px;
     bottom: 4px;
     background-color: white;
     -webkit-transition: .4s;
@@ -91,3 +132,48 @@ input:checked + .slider:before {
 .sidebar-details {
     margin: 24px 0 0;
 }
+
+.charts-container {
+    display: none;
+}
+
+.charts-container canvas {
+    width: 100%;
+    margin: 0 0 24px 0;
+    background-color: #2196F3;
+}
+
+.prediction {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid gray;
+    border-radius: 12px;
+    box-shadow: 2px 2px 5px 0 grey;
+}
+
+.prediction_header {
+    text-align: center;
+    font-weight: bold;
+}
+
+.prediction_entity {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 12px;
+    border-bottom: 1px solid #2196F3;
+}
+
+.predictedElectricity {
+    color: green;
+}
+
+.predictedHeat {
+    color: red;
+}
+
+.predictedWater {
+    color: blue;
+}
+

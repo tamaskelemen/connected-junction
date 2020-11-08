@@ -8,7 +8,8 @@ var mapview = L.map(
         ],
         minZoom: 5,
         maxZoom: 20,
-        zoom: 13
+        zoom: 10,
+        preferCanvas: true
     }
 );
 
@@ -17,49 +18,78 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
         '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
         'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    id: 'mapbox/light-v9',
+    id: 'mapbox/streets-v9',
     tileSize: 512,
     zoomOffset: -1
 }).addTo(mapview);
 
 var categories = {},
-    category = 'Growth rate';
+    growth_rate = 'Growth rate',
+    real_estate = 'Real estates';
 
 var layersControl = L.control.layers(null, null).addTo(mapview);
 
-$.getJSON("assets/finnland.geojson", function (data) {
+/**
+ * GET Growth rate with geo coords
+ */
+$.getJSON("http://35.205.22.186/api/getAll", function (data) {
+    var geoCoords = [];
+    var getGrowths = [];
+    var getRgbGrowths = [];
+
+    data.forEach(function (item) {
+        item['geoJson'].properties.name = item['name'];
+        geoCoords.push(item['geoJson']);
+        getGrowths.push(item['growthRate']);
+    });
+
+    var max = Math.max(...getGrowths);
+
+    getGrowths.forEach(function (item) {
+        var percentage = item/max;
+        percentage = percentage.toFixed(3) * 1;
+        percentage = Math.sqrt(percentage);
+        percentage = percentage * 255;
+        percentage = Math.round(percentage);
+        getRgbGrowths.push(percentage);
+    });
+
+    var i = 0;
     var geoJsonLayer = L.geoJson(
-        [
-            {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[24.9332549, 60.173260102], [24.933443, 60.172953402], [24.9335617, 60.172972802], [24.9339278, 60.172386502], [24.9338099, 60.172367902], [24.9339586, 60.172126902], [24.9343507, 60.172049102], [24.9347193, 60.171978202], [24.9349585, 60.172075202], [24.9350143, 60.172021602], [24.9353625, 60.171638802], [24.9353767, 60.171622402], [24.9356505, 60.171334702], [24.9356593, 60.171319402], [24.9356612, 60.171303902], [24.9356495, 60.171284702], [24.936299, 60.170836002], [24.9363191, 60.170822102], [24.9364904, 60.170709402], [24.9373967, 60.170110302], [24.9374355, 60.170084102], [24.9374705, 60.170060802], [24.9375931, 60.169977202], [24.9380775, 60.169621902], [24.9381932, 60.169664202], [24.9382465, 60.169685702], [24.9382945, 60.169654602], [24.9387596, 60.169355002], [24.938866, 60.169282202], [24.9390813, 60.169134202], [24.9391413, 60.169094002], [24.9391948, 60.169057402], [24.9393344, 60.168959602], [24.9393683, 60.168936602], [24.9396928, 60.168725902], [24.9399596, 60.168534302], [24.940129, 60.168418402], [24.9403901, 60.168264302], [24.9406077, 60.168113002], [24.9407863, 60.167996502], [24.9410613, 60.167814702], [24.9412065, 60.167720502], [24.9422251, 60.167745502], [24.9427335, 60.167758202], [24.9428188, 60.167760302], [24.9432081, 60.167769902], [24.9436888, 60.167782202], [24.943931, 60.167788502], [24.9447384, 60.167807802], [24.9451431, 60.167818102], [24.9455408, 60.167827802], [24.9457983, 60.167837302], [24.9463567, 60.167852202], [24.9468961, 60.167864902], [24.9473912, 60.167878302], [24.9474135, 60.167878802], [24.9476726, 60.167884902], [24.9477311, 60.167886402], [24.9478706, 60.167889902], [24.947959, 60.167892102], [24.9480558, 60.167894602], [24.9481289, 60.167896402], [24.9482495, 60.167899402], [24.9484878, 60.167905502], [24.9487977, 60.167913302], [24.9488302, 60.167914102], [24.9490236, 60.167919002], [24.9492035, 60.167923502], [24.9493102, 60.167926202], [24.9495655, 60.167929002], [24.9497319, 60.167933602], [24.9497974, 60.167935402], [24.9498553, 60.167937002], [24.9500676, 60.167942902], [24.9504343, 60.167954202], [24.9505899, 60.167958502], [24.9507092, 60.167961702], [24.9509249, 60.167967602], [24.9512438, 60.167972902], [24.9512374, 60.168058902], [24.9512282, 60.168058702], [24.9512225, 60.168111702], [24.9512172, 60.168161702], [24.9512103, 60.168226902], [24.9512195, 60.168227202], [24.9512168, 60.168252302], [24.9512154, 60.168266202], [24.9512086, 60.168329702], [24.9511891, 60.168512302], [24.9511816, 60.168582602], [24.9511737, 60.168656602], [24.9511576, 60.168807402], [24.951156, 60.168822302], [24.9511509, 60.168872102], [24.951147, 60.168910202], [24.9511421, 60.168958002], [24.9510476, 60.169867502], [24.9510329, 60.170004202], [24.9510029, 60.170221002], [24.9509892, 60.170350502], [24.9509755, 60.170480602], [24.9509537, 60.170712402], [24.9509397, 60.170844502], [24.9509069, 60.171103302], [24.9508991, 60.171159802], [24.9508666, 60.171417002], [24.9508511, 60.171549002], [24.9508174, 60.171823602], [24.9507708, 60.172270002], [24.9507418, 60.172522002], [24.9507388, 60.172545502], [24.9507366, 60.172566802], [24.9507332, 60.172599802], [24.9507266, 60.172657702], [24.9507244, 60.172677702], [24.950723, 60.172689302], [24.9507212, 60.172707102], [24.9506978, 60.172914202], [24.9506956, 60.172933802], [24.9506942, 60.172944602], [24.9506932, 60.172952502], [24.9506799, 60.173075002], [24.9506637, 60.173209102], [24.950631, 60.173503802], [24.9506144, 60.173663302], [24.9505812, 60.173953302], [24.950589, 60.173953302], [24.9506295, 60.173954202], [24.9506747, 60.173955302], [24.9506748, 60.174100402], [24.9506678, 60.174159502], [24.9506634, 60.174196902], [24.9506533, 60.174282302], [24.9506496, 60.174313402], [24.95064, 60.174394802], [24.9506285, 60.174531902], [24.950614, 60.174654102], [24.9505615, 60.175099902], [24.9505299, 60.175349902], [24.9505276, 60.175499502], [24.9505255, 60.175523402], [24.9505235, 60.175547302], [24.9505055, 60.175705502], [24.9505051, 60.175710402], [24.9504228, 60.176056702], [24.950413, 60.176129802], [24.9504001, 60.176338002], [24.9493811, 60.176323002], [24.9436568, 60.177695102], [24.9421884, 60.178627502], [24.9399086, 60.179919202], [24.9381991, 60.179761102], [24.9337853, 60.179747202], [24.9334742, 60.176833302], [24.9344135, 60.175427002], [24.9344496, 60.175370602], [24.9345769, 60.175156302], [24.9346597, 60.175008502], [24.9347945, 60.174764602], [24.9347955, 60.174763002], [24.9348113, 60.174738202], [24.9348336, 60.174697702], [24.934856, 60.174656902], [24.9348635, 60.174643302], [24.9348843, 60.174605602], [24.9348978, 60.174584302], [24.9349103, 60.174562302], [24.9349186, 60.174547702], [24.9349625, 60.174464102], [24.9348445, 60.174412602], [24.9347996, 60.174391902], [24.9340994, 60.174069802], [24.9339668, 60.174008802], [24.9333967, 60.173764902], [24.9336181, 60.173536702], [24.9337953, 60.173346002], [24.9337086, 60.173327902], [24.9336699, 60.173322302], [24.9334741, 60.173293502], [24.933417, 60.173285202], [24.9333625, 60.173277202], [24.9332945, 60.173267202], [24.9332549, 60.173260102]]]}, "properties": {"id": -184713, "admin_level": 10, "parents": "-4146365,-34914,-38101,-37355,-2579844,-2375172,-54224", "name": "Kluuvi", "local_name": "Kluuvi", "name_en": null}},
-            {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [[[24.9504001, 60.176338002], [24.950413, 60.176129802], [24.9504228, 60.176056702], [24.9505051, 60.175710402], [24.9505055, 60.175705502], [24.9505235, 60.175547302], [24.9505255, 60.175523402], [24.9505276, 60.175499502], [24.9505299, 60.175349902], [24.9505615, 60.175099902], [24.950614, 60.174654102], [24.9506285, 60.174531902], [24.95064, 60.174394802], [24.9506496, 60.174313402], [24.9506533, 60.174282302], [24.9506634, 60.174196902], [24.9506678, 60.174159502], [24.9506748, 60.174100402], [24.9506747, 60.173955302], [24.9506295, 60.173954202], [24.950589, 60.173953302], [24.9505812, 60.173953302], [24.9506144, 60.173663302], [24.950631, 60.173503802], [24.9506637, 60.173209102], [24.9506799, 60.173075002], [24.9506932, 60.172952502], [24.9506942, 60.172944602], [24.9506956, 60.172933802], [24.9506978, 60.172914202], [24.9507212, 60.172707102], [24.950723, 60.172689302], [24.9507244, 60.172677702], [24.9507266, 60.172657702], [24.9507332, 60.172599802], [24.9507366, 60.172566802], [24.9507388, 60.172545502], [24.9507418, 60.172522002], [24.9507708, 60.172270002], [24.9508174, 60.171823602], [24.9508511, 60.171549002], [24.9508666, 60.171417002], [24.9508991, 60.171159802], [24.9509069, 60.171103302], [24.9509397, 60.170844502], [24.9509537, 60.170712402], [24.9509755, 60.170480602], [24.9509892, 60.170350502], [24.9510029, 60.170221002], [24.9510329, 60.170004202], [24.9510476, 60.169867502], [24.9511421, 60.168958002], [24.951147, 60.168910202], [24.9511509, 60.168872102], [24.951156, 60.168822302], [24.9511576, 60.168807402], [24.9511737, 60.168656602], [24.9511816, 60.168582602], [24.9511891, 60.168512302], [24.9512086, 60.168329702], [24.9512154, 60.168266202], [24.9512168, 60.168252302], [24.9512195, 60.168227202], [24.9512103, 60.168226902], [24.9512172, 60.168161702], [24.9512225, 60.168111702], [24.9512282, 60.168058702], [24.9512374, 60.168058902], [24.9512438, 60.167972902], [24.9515041, 60.167976002], [24.9517581, 60.167979102], [24.951884, 60.167980702], [24.952109, 60.167983402], [24.9522621, 60.167987202], [24.9524376, 60.167991002], [24.9527378, 60.167997402], [24.9529341, 60.168001702], [24.9530345, 60.168003902], [24.9533338, 60.168010302], [24.9535262, 60.168014502], [24.9536944, 60.168039402], [24.9537255, 60.168044002], [24.9537333, 60.168040602], [24.9540391, 60.168047602], [24.9540892, 60.168048702], [24.9541634, 60.168050402], [24.9543965, 60.168055802], [24.9545977, 60.168060402], [24.9547151, 60.168063102], [24.9547939, 60.168064902], [24.9548834, 60.168067002], [24.9550683, 60.168071202], [24.955232, 60.168076102], [24.9555914, 60.168085302], [24.9559259, 60.168093902], [24.9560702, 60.168097602], [24.9562052, 60.168101002], [24.9563626, 60.168105102], [24.9565185, 60.168109002], [24.9566515, 60.168112502], [24.9568035, 60.168116302], [24.9577259, 60.168142602], [24.9590707, 60.169266402], [24.9661678, 60.170576102], [24.9719721, 60.170573402], [24.978591, 60.169927402], [24.9767996, 60.174996902], [24.966668, 60.176248902], [24.9581129, 60.177288502], [24.9539044, 60.177252802], [24.951, 60.176345302], [24.9504001, 60.176338002]]]}, "properties": {"id": -184712, "admin_level": 10, "parents": "-4146365,-34914,-38101,-37355,-2579844,-2375172,-54224", "name": "Kruununhaka", "local_name": "Kruununhaka", "name_en": null}}
-        ],
+        geoCoords,
         {
             style: function () {
                 return {
                     color: '#11aaff55',
+                    fillOpacity: 0.8
                 };
             },
             onEachFeature: function (feature, layer) {
+                layer.setStyle(
+                    {
+                        fillColor : "rgba(0, 80, " + getRgbGrowths[i] + ", 1)",
+                    }
+                );
+                i++;
+
                 var popupText = "<b>" + feature.properties.name + "</b>";
                 layer.bindPopup(popupText);
-                layer.on('mouseover', function (e) {
+                layer.on('mouseover', function () {
                     this.openPopup();
                 });
-                // Határértékek számítása
 
-                if (typeof categories[category] === "undefined") {
-                    categories[category] = L.layerGroup().addTo(mapview);
-                    layersControl.addOverlay(categories[category], category);
+                if (typeof categories[growth_rate] === "undefined") {
+                    categories[growth_rate] = L.layerGroup().addTo(mapview);
+                    layersControl.addOverlay(categories[growth_rate], growth_rate);
                 }
-                categories[category].addLayer(layer);
+                categories[growth_rate].addLayer(layer);
             },
             clickable: true
         }
     );
-    geoJsonLayer.setStyle({'className': 'map-path'});
+    geoJsonLayer.setStyle({className: 'map-path'});
     geoJsonLayer.addTo(mapview);
 });
-
 
 /**
  * MAIN
@@ -68,12 +98,185 @@ $(window).on('load', function() {
     console.log('Page is ready...');
     setTimeout(
         function () {
-            $(".map-path").click(function () {
-                 $(this).css({ fill: '#00ff00' });
-            });
+            // console.log(1);
+            // $("path").click(function () {
+            //     console.log(231);
+            //     $(this).css({ fill: '#000fff' });
+            // });
         },
-        1000
+        2000
     );
+});
+
+/**
+ * Estates
+ */
+$.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
+    data.forEach(function (item) {
+        if (
+            (item.coordinates != null)
+            && (item.coordinates.Latitude != null)
+            && (item.coordinates.Longitude != null)
+        ) {
+            var year = '',
+                energy_class = '',
+                plan = '',
+                coating = '',
+                rooms = '',
+                area = '',
+                renovation = '',
+                rent = '',
+                price = '',
+                unencrumbed_price = '';
+
+            if (item.buildingYearOfFirstUse != null && item.buildingYearOfFirstUse != 0) {
+                year = item.buildingYearOfFirstUse;
+            }
+
+            if (item.buildingEnergyClass != null && item.buildingEnergyClass['@class'] != null) {
+                energy_class = item.buildingEnergyClass['@class'];
+            }
+
+            if (item.buildingPlanSituation != null && item.buildingPlanSituation.length < 30) {
+                plan = item.buildingPlanSituation;
+            }
+
+            if (item.housingCoating != null) {
+                // coating = item.housingCoating;
+            }
+
+            if (item.housingNumberOfRooms != null) {
+                rooms = item.housingNumberOfRooms;
+            }
+
+            if (item.housingTotalArea != null && item.housingTotalArea['@size'] != null && item.housingTotalArea['@unit'] != null) {
+                area = item.housingTotalArea['@size'] + item.housingTotalArea['@unit'];
+            }
+
+            if (item.renovations != null) {
+                if (item.renovations.Accepted != null) {
+                    // renovation += item.renovations.Accepted + ',';
+                }
+
+                if (item.renovations.Done != null) {
+                    // renovation += item.renovations.Done + ',';
+                }
+
+                if (item.renovations.OtherKnown != null) {
+                    // renovation += item.renovations.OtherKnown + ',';
+                }
+            }
+
+            if (item.rentPerMonth != null && item.rentPerMonth['@currency'] != null && item.rentPerMonth['@unit'] != null && item.rentPerMonth['@value'] != null) {
+                rent = item.rentPerMonth['@value'] + item.rentPerMonth['@currency'] + ' per ' + item.rentPerMonth['@unit'];
+            }
+
+            if (item.salesPrice != null && item.salesPrice['@currency'] != null && item.salesPrice['@value'] != null) {
+                price = item.salesPrice['@value'] + item.salesPrice['@currency'];
+            }
+            
+            if (item.unencumberedSalesPrice != null && item.unencumberedSalesPrice['@currency'] != null && item.unencumberedSalesPrice['@value'] != null) {
+                unencrumbed_price = item.unencumberedSalesPrice['@value'] + item.unencumberedSalesPrice['@currency'];
+            }
+
+            var markup = "<div>";
+
+            if (energy_class != '' && energy_class != ' ') {
+                markup += "<p class='buildingEnergyClass'>Energy class: " + energy_class + "</p>";
+            }
+
+            if (year != '' && year != ' ') {
+                markup += "<p class='buildingEnergyClass'>Year of first use: " + year+ "</p>";
+            }
+
+            if (plan != '' && plan != ' ') {
+                markup += "<p class='buildingPlanSituation'>Plan: " + plan + "</p>";
+            }
+
+            if (coating != '' && coating != ' ') {
+                markup += "<p class='housingCoating'>Coating: " + coating + "</p>";
+            }
+
+            if (rooms != '' && rooms != ' ') {
+                markup += "<p class='housingNumberOfRooms'>Rooms: " + rooms + "</p>";
+            }
+
+            if (area != '' && area != ' ') {
+                markup += "<p class='housingTotalArea'>Area: " + area + "</p>";
+            }
+
+            if (renovation != '' && renovation != ' ') {
+                markup += "<p class='renovations'>Renovation: " + renovation + "</p>";
+            }
+
+            if (rent != '' && rent != ' ') {
+                markup += "<p class='rentPerMonth'>Rent: " + rent + "</p>";
+            }
+
+            if (price != '' && price != ' ') {
+                markup += "<p class='salesPrice'>Price: " + price + "</p>";
+            }
+
+            if (unencrumbed_price != '' && unencrumbed_price != ' ') {
+                markup += "<p class='unencumberedSalesPrice'>Unencumbered price: " + unencrumbed_price + "</p>";
+            }
+
+            markup += "</div>";
+            markup = markup.replace(/NaN/g, '');
+            L.circle(
+                [
+                    item.coordinates.Latitude,
+                    item.coordinates.Longitude
+                ],
+                {
+                    opacity: 1,
+                    radius: 50,
+                    fillColor: "#ff4500",
+                    color: "#ff4500",
+                    data: {
+                        objectId: item.objectId,
+                        buildingEnergyClass: energy_class,
+                        buildingYearOfFirstUse: year,
+                        buildingPlanSituation: plan,
+                        housingCoating: coating,
+                        housingNumberOfRooms: rooms,
+                        housingTotalArea: area,
+                        renovations: renovation,
+                        rentPerMonth: rent,
+                        salesPrice: price,
+                        unencumberedSalesPrice: unencrumbed_price
+                    }
+                },
+            )
+                .addTo(mapview)
+                .bringToFront()
+                .bindPopup(markup)
+                .on("click", function () {
+                    var data = this.options.data;
+
+                    for (var [key, value] of Object.entries(data)) {
+                        if( value == '') {
+                            value = 'N/A';
+                        }
+
+                        $('.' + key + ' span:nth-child(2)').text(value);
+                    }
+
+                    $.getJSON("http://35.205.22.186/api/estatePredictions?objectId=" + data.objectId, function (result) {
+                        for (const [key, object] of Object.entries(result)) {
+                            if (object.value != null) {
+                                object.value *= 100;
+                                object.value = object.value.toFixed(6);
+                            } else {
+                                object.value = 'N/A';
+                            }
+
+                            $('.' + key + ' span:nth-child(2)').text(object.value);
+                        }
+                    });
+                });
+        }
+    });
 });
 
 /**
@@ -81,14 +284,30 @@ $(window).on('load', function() {
  */
 $(".switch input[type='checkbox']").click(function () {
     var switcher = $('.switch-label');
+    var properties = $('.properties, .prediction');
+    var charts = $('.charts-container');
 
     if (switcher.text().match(/statistics/)) {
-        switcher.text('Change to details');
-        switcher.addClass('switch-statistics');
-        switcher.removeClass('switch-details');
+        properties.fadeOut(200);
+        setTimeout(
+            function () {
+                charts.fadeIn(200);
+                switcher.text('Change to details');
+                switcher.addClass('switch-statistics');
+                switcher.removeClass('switch-details');
+            },
+            200
+        );
     } else {
-        switcher.text('Change to statistics');
-        switcher.addClass('switch-details');
-        switcher.removeClass('switch-statistics');
+        charts.fadeOut(200);
+        setTimeout(
+            function () {
+                properties.fadeIn(200);
+                switcher.text('Change to statistics');
+                switcher.addClass('switch-details');
+                switcher.removeClass('switch-statistics');
+            },
+            200
+        );
     }
 });
