@@ -1,9 +1,7 @@
 package com.junction.rootkicskacsa.backend.controller;
 
 import com.junction.rootkicskacsa.backend.model.*;
-import com.junction.rootkicskacsa.backend.repository.EstateRepository;
-import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
-import com.junction.rootkicskacsa.backend.repository.WaterOverallRepository;
+import com.junction.rootkicskacsa.backend.repository.*;
 import com.junction.rootkicskacsa.backend.service.CSVDataLoaderService;
 import com.junction.rootkicskacsa.backend.service.EstatePredictionService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,8 @@ public class ApiController {
     private final RegionGrowthRateRepository regionGrowthRateRepository;
     private final EstateRepository estateRepository;
     private final WaterOverallRepository waterOverallRepository;
+    private final HeatOverallRepository heatOverallRepository;
+    private final ElectricityOverallRepository electricityOverallRepository;
 
     @GetMapping("/loadRegions")
     public void loadRegions() {
@@ -153,6 +153,26 @@ public class ApiController {
     public List<WaterOverall> getWaterOverallData() {
         try {
             return waterOverallRepository.findAll();
+        } catch (Exception ex) {
+            log.error("Failed to query simplified estate data", ex);
+            throw new ApiException();
+        }
+    }
+
+    @GetMapping(path = "/heatOverall", produces = "application/json")
+    public List<HeatOverall> getheatOverallData() {
+        try {
+            return heatOverallRepository.findAll();
+        } catch (Exception ex) {
+            log.error("Failed to query simplified estate data", ex);
+            throw new ApiException();
+        }
+    }
+
+    @GetMapping(path = "/electricityOverall", produces = "application/json")
+    public List<ElectricityOverall> getElectricityOverallData() {
+        try {
+            return electricityOverallRepository.findAll();
         } catch (Exception ex) {
             log.error("Failed to query simplified estate data", ex);
             throw new ApiException();
