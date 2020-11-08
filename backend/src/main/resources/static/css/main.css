@@ -159,9 +159,20 @@ input:checked + .slider:before {
 
 .prediction_entity {
     display: flex;
-    color: green;
     justify-content: space-between;
     align-items: flex-end;
     margin: 12px;
     border-bottom: 1px solid #2196F3;
+}
+
+.predictedElectricity {
+    color: green;
+}
+
+.predictedHeat {
+    color: red;
+}
+
+.predictedWater {
+    color: blue;
 }

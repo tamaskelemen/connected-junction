@@ -8,7 +8,7 @@ var mapview = L.map(
         ],
         minZoom: 5,
         maxZoom: 20,
-        zoom: 13,
+        zoom: 10,
         preferCanvas: true
     }
 );
@@ -226,6 +226,7 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                     fillColor: "#ff4500",
                     color: "#ff4500",
                     data: {
+                        objectId: item.objectId,
                         buildingEnergyClass: energy_class,
                         buildingPlanSituation: plan,
                         housingCoating: coating,
@@ -243,10 +244,27 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 .bindPopup(markup)
                 .on("click", function () {
                     var data = this.options.data;
-                    console.log()
-                    for (const [key, value] of Object.entries(data)) {
+
+                    for (var [key, value] of Object.entries(data)) {
+                        if( value == '') {
+                            value = 'N/A';
+                        }
+
                         $('.' + key + ' span:nth-child(2)').text(value);
                     }
+
+                    $.getJSON("http://35.205.22.186/api/estatePredictions?objectId=" + data.objectId, function (result) {
+                        for (const [key, object] of Object.entries(result)) {
+                            if (object.value != null) {
+                                object.value *= 100;
+                                object.value = object.value.toFixed(6);
+                            } else {
+                                object.value = 'N/A';
+                            }
+
+                            $('.' + key + ' span:nth-child(2)').text(object.value);
+                        }
+                    });
                 });
         }
     });
