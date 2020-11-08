@@ -5,6 +5,7 @@ import com.junction.rootkicskacsa.backend.model.*;
 import com.junction.rootkicskacsa.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.geojson.GeoJsonObject;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -13,7 +14,10 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CSVDataLoaderService {
@@ -24,6 +28,10 @@ public class CSVDataLoaderService {
     private final ElectricityLastyearRepository electricityLastyearRepository;
     private final ElectricityOverallRepository electricityOverallRepository;
     private final HeatOverallRepository heatOverallRepository;
+
+    private final PredictedElectricityRepository predictedElectricityRepository;
+    private final PredictedHeatRepository predictedHeatRepository;
+    private final PredictedWaterRepository predictedWaterRepository;
 
     private final ObjectMapper mapper;
 
@@ -91,6 +99,54 @@ public class CSVDataLoaderService {
                 .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
                 .value(Double.valueOf(data[2]))
                 .build();
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void loadElectricityPredictionsFromCSV() {
+        List<PredictedElectricity> records = Files.readAllLines(ResourceUtils.getFile("classpath:data/predicted_electricity.csv").toPath())
+          .stream()
+          .map(line -> line.split(";"))
+          .map(data -> PredictedElectricity.builder()
+            .estateObjectId(Long.parseLong(data[0]))
+            .value(Double.parseDouble(data[1]))
+            .build())
+          .collect(Collectors.toList());
+        predictedElectricityRepository.deleteAll();
+        predictedElectricityRepository.saveAll(records);
+        log.info("Electricity predictions loaded");
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void loadHeatPredictionsFromCSV() {
+        List<PredictedHeat> records = Files.readAllLines(ResourceUtils.getFile("classpath:data/predicted_heat.csv").toPath())
+          .stream()
+          .map(line -> line.split(";"))
+          .map(data -> PredictedHeat.builder()
+            .estateObjectId(Long.parseLong(data[0]))
+            .value(Double.parseDouble(data[1]))
+            .build())
+          .collect(Collectors.toList());
+        predictedHeatRepository.deleteAll();
+        predictedHeatRepository.saveAll(records);
+        log.info("Heat predictions loaded");
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void loadWaterPredictionsFromCSV() {
+        List<PredictedWater> records = Files.readAllLines(ResourceUtils.getFile("classpath:data/predicted_water.csv").toPath())
+          .stream()
+          .map(line -> line.split(";"))
+          .map(data -> PredictedWater.builder()
+            .estateObjectId(Long.parseLong(data[0]))
+            .value(Double.parseDouble(data[1]))
+            .build())
+          .collect(Collectors.toList());
+        predictedWaterRepository.deleteAll();
+        predictedWaterRepository.saveAll(records);
+        log.info("Water predictions loaded");
     }
 
     @Transactional
