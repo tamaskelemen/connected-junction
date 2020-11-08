@@ -185,7 +185,7 @@ public class ApiController {
         return estatePredictionService.getEstatePredictions(objectId);
     }
 
-    @GetMapping(path = "/estatePhoto", produces = "application/json")
+    @GetMapping(path = "/estatePhoto", produces = "text/plain")
     public String getEstatePhotoUrl(@RequestParam Long objectId) {
         Optional<EstatePhoto> estatePhoto = estateRepository.getEstatePhoto(objectId);
         return estatePhoto.map(EstatePhoto::getUrl).orElse(null);
