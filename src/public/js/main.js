@@ -25,14 +25,20 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 var categories = {},
     growth_rate = 'Growth rate',
+    real_estate = 'Real estates',
     predited_growth ='AI driven growth rate',
     water_overall = 'Water overall',
     heat_overall = 'Heat overall',
-    energy_overall = 'Energy overall'
+    energy_overall = 'Energy overall',
+    buildingYears = [],
+    buildingYearsSum,
+    chart1;
 ;
 
 
 var layersControl = L.control.layers(null, null).addTo(mapview);
+
+setBaseYearsChart();
 
 /**
  * GET Growth rate with geo coords
@@ -396,6 +402,8 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 price = '',
                 unencrumbed_price = '';
 
+            addBuildingYears(item);
+
             if (item.buildingYearOfFirstUse != null && item.buildingYearOfFirstUse != 0) {
                 year = item.buildingYearOfFirstUse;
             }
@@ -524,14 +532,25 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 .bindPopup(markup)
                 .on("click", function () {
                     var data = this.options.data;
+                    var buildingYearOfFirstUse = null;
 
                     for (var [key, value] of Object.entries(data)) {
                         if( value == '') {
                             value = 'N/A';
                         }
 
+                        if (key == 'buildingYearOfFirstUse') {
+                            buildingYearOfFirstUse = value;
+                        }
+
                         $('.' + key + ' span:nth-child(2)').text(value);
                     }
+
+                    if (buildingYearOfFirstUse == null) {
+                        buildingYearOfFirstUse = 2020;
+                    }
+
+                    updateYearsChart(buildingYearOfFirstUse, 'Similar houses from first use year');
 
                     $.get("http://35.205.22.186/api/estatePhoto?objectId=" + data.objectId, function (result) {
                         if (result.url != null) {
@@ -555,6 +574,8 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 });
         }
     });
+
+    setBuildingYearsSum();
 });
 
 /**
@@ -589,3 +610,69 @@ $(".switch input[type='checkbox']").click(function () {
         );
     }
 });
+
+function addBuildingYears(item) {
+    if (item.buildingYearOfFirstUse) {
+        buildingYears.push(item.buildingYearOfFirstUse);
+    }
+}
+
+function setBuildingYearsSum() {
+    var counts = {};
+    var year;
+
+    buildingYears.forEach(function(item, index) {
+        year = String(item);
+
+        counts[item] = 1 + (counts[buildingYears[index]] || 0);
+    });
+
+    buildingYearsSum = counts;
+}
+
+function setBaseYearsChart() {
+    chart1 = setupChart('chart1', [], [], 'Similar houses from first use year');
+}
+
+function updateYearsChart(selectedYear, title) {
+    var data = [];
+    var labels = [];
+
+    chart1.destroy();
+
+    $.each(buildingYearsSum, function(year, sum) {
+        if (year >= (selectedYear-5) && year <= (year+5)) {
+            data.push(sum);
+            labels.push(year);
+        }
+    });
+
+    chart1 = setupChart('chart1', labels, data, title);
+}
+
+function setupChart(chartId, labels, data, title) {
+    var ctx = document.getElementById(chartId);
+
+    if (title === null) {
+        title = '';
+    }
+
+    return new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: labels,
+            datasets: [{
+                label: title,
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: data
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+}
