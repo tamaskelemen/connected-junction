@@ -25,7 +25,12 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 var categories = {},
     growth_rate = 'Growth rate',
-    real_estate = 'Real estates';
+    predited_growth ='AI driven growth rate',
+    water_overall = 'Water overall',
+    heat_overall = 'Heat overall',
+    energy_overall = 'Energy overall'
+;
+
 
 var layersControl = L.control.layers(null, null).addTo(mapview);
 
@@ -60,7 +65,7 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
         {
             style: function () {
                 return {
-                    color: '#11aaff55',
+                    color: '#00cc66',
                     fillOpacity: 0.8
                 };
             },
@@ -70,9 +75,9 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
                         fillColor : "rgba(0, 80, " + getRgbGrowths[i] + ", 1)",
                     }
                 );
-                i++;
 
-                var popupText = "<b>" + feature.properties.name + "</b>";
+                var percent = (getRgbGrowths[i] / 255 * 100).toFixed(2);
+                var popupText = "<b>" + feature.properties.name + "</b><br><b>Investment growth rate: " + percent + "%</b>";
                 layer.bindPopup(popupText);
                 layer.on('mouseover', function () {
                     this.openPopup();
@@ -82,7 +87,269 @@ $.getJSON("http://35.205.22.186/api/getAll", function (data) {
                     categories[growth_rate] = L.layerGroup().addTo(mapview);
                     layersControl.addOverlay(categories[growth_rate], growth_rate);
                 }
+
                 categories[growth_rate].addLayer(layer);
+                i++;
+            },
+            clickable: true
+        }
+    );
+    geoJsonLayer.setStyle({className: 'map-path'});
+    geoJsonLayer.addTo(mapview);
+});
+
+/**
+ * GET Prediction growth rate with geo coords
+ */
+$.getJSON("http://35.205.22.186/api/getAll", function (data) {
+    var geoCoords = [];
+    var getGrowths = [];
+    var getRgbGrowths = [];
+    var sum = 0;
+
+    data.forEach(function (item) {
+        sum += item['predictedGrowthRate'];
+    });
+
+    data.forEach(function (item) {
+        item['predictedGrowthRate'] = item['predictedGrowthRate'] / sum;
+        item['geoJson'].properties.name = item['name'];
+        geoCoords.push(item['geoJson']);
+        getGrowths.push(item['predictedGrowthRate']);
+    });
+
+    var max = Math.max(...getGrowths);
+
+    getGrowths.forEach(function (item) {
+        var percentage = item/max;
+        percentage = percentage.toFixed(3) * 1;
+        percentage = Math.sqrt(percentage);
+        percentage = percentage * 255;
+        percentage = Math.round(percentage);
+        getRgbGrowths.push(percentage);
+    });
+
+    var i = 0;
+    var geoJsonLayer = L.geoJson(
+        geoCoords,
+        {
+            style: function () {
+                return {
+                    color: '#00cc66',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                layer.setStyle(
+                    {
+                        fillColor : "rgba(0, 80, " + getRgbGrowths[i] + ", 1)",
+                    }
+                );
+                var percent = (getRgbGrowths[i] / 255 * 100).toFixed(2);
+                var popupText = "<b>" + feature.properties.name + "</b><br><b>AI predicted investment growth rate in the feature: " + percent + "%</b>";
+                layer.bindPopup(popupText);
+                layer.on('mouseover', function () {
+                    this.openPopup();
+                });
+
+                if (typeof categories[predited_growth] === "undefined") {
+                    categories[predited_growth] = L.layerGroup().addTo(mapview);
+                    layersControl.addOverlay(categories[predited_growth], predited_growth);
+                }
+
+                categories[predited_growth].addLayer(layer);
+                i++;
+            },
+            clickable: true
+        }
+    );
+    geoJsonLayer.setStyle({className: 'map-path'});
+    geoJsonLayer.addTo(mapview);
+});
+
+/**
+ * GET Water overall
+ */
+$.getJSON("http://35.205.22.186/api/waterOverall", function (data) {
+    var geoCoords = [];
+    var getOverall = [];
+    var getRgbOverall = [];
+
+    data.forEach(function (item) {
+        item['geoJson'].properties.name = item['name'];
+        geoCoords.push(item['geoJson']);
+        getOverall.push(item['value']);
+    });
+
+    var max = Math.max(...getOverall);
+
+    getOverall.forEach(function (item) {
+        var percentage = item/max;
+        percentage = percentage.toFixed(3) * 1;
+        percentage = Math.sqrt(percentage);
+        percentage = percentage * 255;
+        percentage = Math.round(percentage);
+        getRgbOverall.push(percentage);
+    });
+
+    var i = 0;
+    var geoJsonLayer = L.geoJson(
+        geoCoords,
+        {
+            style: function () {
+                return {
+                    color: '#9cd3db',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                layer.setStyle(
+                    {
+                        fillColor : "rgba(99, " + getRgbOverall[i] + " 68, 1)",
+                    }
+                );
+                var percent = (getRgbOverall[i] / 255 * 100).toFixed(2);
+                var popupText = "<b>" + feature.properties.name + "</b><br><b>ECO index of water consumption: " + percent + "%</b>";
+                layer.bindPopup(popupText);
+                layer.on('mouseover', function () {
+                    this.openPopup();
+                });
+
+                if (typeof categories[water_overall] === "undefined") {
+                    categories[water_overall] = L.layerGroup().addTo(mapview);
+                    layersControl.addOverlay(categories[water_overall], water_overall);
+                }
+
+                categories[water_overall].addLayer(layer);
+                i++;
+            },
+            clickable: true
+        }
+    );
+    geoJsonLayer.setStyle({className: 'map-path'});
+    geoJsonLayer.addTo(mapview);
+});
+
+
+/**
+ * GET Heat overall
+ */
+$.getJSON("http://35.205.22.186/api/heatOverall", function (data) {
+    var geoCoords = [];
+    var getOverall = [];
+    var getRgbOverall = [];
+
+    data.forEach(function (item) {
+        item['geoJson'].properties.name = item['name'];
+        geoCoords.push(item['geoJson']);
+        getOverall.push(item['value']);
+    });
+
+    var max = Math.max(...getOverall);
+
+    getOverall.forEach(function (item) {
+        var percentage = item/max;
+        percentage = percentage.toFixed(3) * 1;
+        percentage = Math.sqrt(percentage);
+        percentage = percentage * 255;
+        percentage = Math.round(percentage);
+        getRgbOverall.push(percentage);
+    });
+
+    var i = 0;
+    var geoJsonLayer = L.geoJson(
+        geoCoords,
+        {
+            style: function () {
+                return {
+                    color: '#aa7a00',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                layer.setStyle(
+                    {
+                        fillColor : "rgba(" + getRgbOverall[i] + " 158, 255, 1)",
+                    }
+                );
+                var percent = (getRgbOverall[i] / 255 * 100).toFixed(2);
+                var popupText = "<b>" + feature.properties.name + "</b><br><b>ECO index of heat consumption: " + percent + "%</b>";
+                layer.bindPopup(popupText);
+                layer.on('mouseover', function () {
+                    this.openPopup();
+                });
+
+                if (typeof categories[heat_overall] === "undefined") {
+                    categories[heat_overall] = L.layerGroup().addTo(mapview);
+                    layersControl.addOverlay(categories[heat_overall], heat_overall);
+                }
+
+                i++;
+                categories[heat_overall].addLayer(layer);
+            },
+            clickable: true
+        }
+    );
+    geoJsonLayer.setStyle({className: 'map-path'});
+    geoJsonLayer.addTo(mapview);
+});
+
+/**
+ * GET Energy overall
+ */
+$.getJSON("http://35.205.22.186/api/electricityOverall", function (data) {
+    var geoCoords = [];
+    var getOverall = [];
+    var getRgbOverall = [];
+
+    data.forEach(function (item) {
+        item['geoJson'].properties.name = item['name'];
+        geoCoords.push(item['geoJson']);
+        getOverall.push(item['value']);
+    });
+
+    var max = Math.max(...getOverall);
+
+    getOverall.forEach(function (item) {
+        var percentage = item/max;
+        percentage = percentage.toFixed(3) * 1;
+        percentage = Math.sqrt(percentage);
+        percentage = percentage * 255;
+        percentage = Math.round(percentage);
+        getRgbOverall.push(percentage);
+    });
+
+    var i = 0;
+    var geoJsonLayer = L.geoJson(
+        geoCoords,
+        {
+            style: function () {
+                return {
+                    color: '#ffff19',
+                    fillOpacity: 0.8
+                };
+            },
+            onEachFeature: function (feature, layer) {
+                layer.setStyle(
+                    {
+                        fillColor : "rgba(55, 99," + getRgbOverall[i] + ", 1)",
+                    }
+                );
+
+                var percent = (getRgbOverall[i] / 255 * 100).toFixed(2);
+                var popupText = "<b>" + feature.properties.name + "</b><br><b>ECO index of electricity consumption: " + percent + "%</b>";
+                layer.bindPopup(popupText);
+                layer.on('mouseover', function () {
+                    this.openPopup();
+                });
+
+                if (typeof categories[energy_overall] === "undefined") {
+                    categories[energy_overall] = L.layerGroup().addTo(mapview);
+                    layersControl.addOverlay(categories[energy_overall], energy_overall);
+                }
+
+                i++;
+                categories[energy_overall].addLayer(layer);
             },
             clickable: true
         }
@@ -150,7 +417,8 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
             }
 
             if (item.housingTotalArea != null && item.housingTotalArea['@size'] != null && item.housingTotalArea['@unit'] != null) {
-                area = item.housingTotalArea['@size'] + item.housingTotalArea['@unit'];
+                area *= 1;
+                area = Math.round(item.housingTotalArea['@size']).toFixed(0) + item.housingTotalArea['@unit'];
             }
 
             if (item.renovations != null) {
@@ -168,15 +436,18 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
             }
 
             if (item.rentPerMonth != null && item.rentPerMonth['@currency'] != null && item.rentPerMonth['@unit'] != null && item.rentPerMonth['@value'] != null) {
-                rent = item.rentPerMonth['@value'] + item.rentPerMonth['@currency'] + ' per ' + item.rentPerMonth['@unit'];
+                item.rentPerMonth['@value'] *= 1;
+                rent = Math.round(item.rentPerMonth['@value']).toFixed(0) + ' ' + item.rentPerMonth['@currency'] + ' per ' + item.rentPerMonth['@unit'];
             }
 
             if (item.salesPrice != null && item.salesPrice['@currency'] != null && item.salesPrice['@value'] != null) {
-                price = item.salesPrice['@value'] + item.salesPrice['@currency'];
+                item.salesPrice['@value'] *= 1;
+                price = Math.round(item.salesPrice['@value']).toFixed(0) +  ' ' + item.salesPrice['@currency'];
             }
             
             if (item.unencumberedSalesPrice != null && item.unencumberedSalesPrice['@currency'] != null && item.unencumberedSalesPrice['@value'] != null) {
-                unencrumbed_price = item.unencumberedSalesPrice['@value'] + item.unencumberedSalesPrice['@currency'];
+                item.unencumberedSalesPrice['@value'] *= 1;
+                unencrumbed_price = Math.round(item.unencumberedSalesPrice['@value']).toFixed(0) + ' ' + item.unencumberedSalesPrice['@currency'];
             }
 
             var markup = "<div>";
