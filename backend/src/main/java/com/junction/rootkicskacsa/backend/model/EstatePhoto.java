@@ -12,6 +12,8 @@ import lombok.extern.jackson.Jacksonized;
 @SuperBuilder
 public class EstatePhoto {
 
+    public static String PAA = "PAA";
+
     @JsonProperty("@url")
     private String url;
 

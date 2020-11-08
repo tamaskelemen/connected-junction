@@ -1,9 +1,10 @@
 package com.junction.rootkicskacsa.backend.repository.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.Estate;
+import com.junction.rootkicskacsa.backend.model.EstatePhoto;
 import com.junction.rootkicskacsa.backend.model.EstateSimplified;
 import com.junction.rootkicskacsa.backend.repository.EstateRepository;
+import com.junction.rootkicskacsa.backend.repository.jdbc.mapper.EstatePhotoRowMapper;
 import com.junction.rootkicskacsa.backend.repository.jdbc.mapper.EstateRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,13 +19,12 @@ public class JDBCEstateRepository implements EstateRepository {
 
     private final JdbcTemplate jdbc;
 
-    private final EstateRowMapper rowMapper;
-
-    private final ObjectMapper objectMapper;
+    private final EstateRowMapper estateRowMapper;
+    private final EstatePhotoRowMapper estatePhotoRowMapper;
 
     @Override
     public List<Estate> findAll() {
-        return jdbc.query("SELECT * FROM estates;", rowMapper);
+        return jdbc.query("SELECT * FROM estates;", estateRowMapper);
     }
 
     @Override
@@ -66,12 +66,10 @@ public class JDBCEstateRepository implements EstateRepository {
           .build());
     }
 
-    public Optional<String> getPhotoUrl() {
-        String sql = "select data->'Links'->'Pictures'->'Picture' as pictures from estates;";
-        jdbc.query(sql, (row, i) -> {
-            System.out.println();
-            return "";
-        });
-        return Optional.empty();
+    @Override
+    public Optional<EstatePhoto> getEstatePhoto(Long objectId) {
+        String sql = "select text(data->'Links'->'Pictures'->'Picture') as pictures from estates where data->'Keys'->>'@objectId' = text(?);";
+        EstatePhoto estatePhoto = jdbc.queryForObject(sql, new Object[]{objectId}, estatePhotoRowMapper);
+        return Optional.ofNullable(estatePhoto);
     }
 }

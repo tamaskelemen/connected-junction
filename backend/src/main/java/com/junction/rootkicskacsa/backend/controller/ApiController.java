@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -186,6 +187,7 @@ public class ApiController {
 
     @GetMapping(path = "/estatePhoto", produces = "application/json")
     public String getEstatePhotoUrl(@RequestParam Long objectId) {
-        return estateRepository.getPhotoUrl().orElse(null);
+        Optional<EstatePhoto> estatePhoto = estateRepository.getEstatePhoto(objectId);
+        return estatePhoto.map(EstatePhoto::getUrl).orElse(null);
     }
 }
