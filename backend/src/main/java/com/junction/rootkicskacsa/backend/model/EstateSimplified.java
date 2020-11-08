@@ -47,4 +47,6 @@ public class EstateSimplified {
     @JsonRawValue
     private String coordinates;
 
+    private Integer buildingYearOfFirstUse;
+
 }

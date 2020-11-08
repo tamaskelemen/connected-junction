@@ -1,6 +1,5 @@
 package com.junction.rootkicskacsa.backend.repository.jdbc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junction.rootkicskacsa.backend.model.Estate;
 import com.junction.rootkicskacsa.backend.model.EstateSimplified;
 import com.junction.rootkicskacsa.backend.repository.EstateRepository;
@@ -40,7 +39,8 @@ public class JDBCEstateRepository implements EstateRepository {
           "data -> 'RentPerMonth' as rent_per_month, " +
           "data -> 'BuildingPlanSituation' as building_plan_situation, " +
           "data -> 'UnencumberedSalesPrice' as unencumbered_sales_price, " +
-          "data -> 'Location' ->> 'Coordinates' as location_coordinates " +
+          "data -> 'Location' ->> 'Coordinates' as location_coordinates, " +
+          "data -> 'Building' ->> 'YearOfFirstUse' as building_year_of_first_use " +
         "from estates;";
 
         return jdbc.query(sql, (row, i) -> EstateSimplified.builder()
@@ -58,6 +58,7 @@ public class JDBCEstateRepository implements EstateRepository {
           .buildingPlanSituation(row.getString("building_plan_situation"))
           .unencumberedSalesPrice(row.getString("unencumbered_sales_price"))
           .coordinates(row.getString("location_coordinates"))
+          .buildingYearOfFirstUse(row.getInt("building_year_of_first_use"))
           .build());
     }
 }
