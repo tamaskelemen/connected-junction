@@ -1,13 +1,11 @@
 package com.junction.rootkicskacsa.backend.controller;
 
-import com.junction.rootkicskacsa.backend.model.Estate;
-import com.junction.rootkicskacsa.backend.model.EstateSimplified;
-import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
-import com.junction.rootkicskacsa.backend.model.WaterOverall;
+import com.junction.rootkicskacsa.backend.model.*;
 import com.junction.rootkicskacsa.backend.repository.EstateRepository;
 import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
 import com.junction.rootkicskacsa.backend.repository.WaterOverallRepository;
 import com.junction.rootkicskacsa.backend.service.CSVDataLoaderService;
+import com.junction.rootkicskacsa.backend.service.EstatePredictionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +22,7 @@ import java.util.List;
 public class ApiController {
 
     private final CSVDataLoaderService csv;
+    private final EstatePredictionService estatePredictionService;
 
     private final RegionGrowthRateRepository regionGrowthRateRepository;
     private final EstateRepository estateRepository;
@@ -49,7 +48,6 @@ public class ApiController {
         }
     }
 
-
     @GetMapping("/loadWaterLastYear")
     public void loadWaterLastYear() {
         try {
@@ -60,6 +58,17 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/loadPredictions")
+    public void loadPredictions() {
+        try {
+            csv.loadElectricityPredictionsFromCSV();
+            csv.loadHeatPredictionsFromCSV();
+            csv.loadWaterPredictionsFromCSV();
+        } catch (Exception ex) {
+            log.error("Failed to load prediction data from csv", ex);
+            throw new ApiException();
+        }
+    }
     @GetMapping("/loadElectricityLastyear")
     public void loadElectricityLastyear() {
         try {
@@ -76,6 +85,16 @@ public class ApiController {
             csv.loadElectricityOverall();
         } catch (Exception ex) {
             log.error("Failed to load region data", ex);
+            throw new ApiException();
+        }
+    }
+
+    @GetMapping("/loadHeatOverall")
+    public void loadHeatOverall() {
+        try {
+            csv.loadHeatOverall();
+        } catch (Exception ex) {
+            log.error("Failed to load heat data", ex);
             throw new ApiException();
         }
     }
@@ -130,7 +149,6 @@ public class ApiController {
         }
     }
 
-
     @GetMapping(path = "/waterOverall", produces = "application/json")
     public List<WaterOverall> getWaterOverallData() {
         try {
@@ -139,5 +157,10 @@ public class ApiController {
             log.error("Failed to query simplified estate data", ex);
             throw new ApiException();
         }
+    }
+
+    @GetMapping(path = "/estatePredictions", produces = "application/json")
+    public EstatePredictions getEstatePredictions(@RequestParam Long objectId) {
+        return estatePredictionService.getEstatePredictions(objectId);
     }
 }
