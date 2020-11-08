@@ -140,7 +140,7 @@ input:checked + .slider:before {
 .charts-container canvas {
     width: 100%;
     margin: 0 0 24px 0;
-    background-color: #2196F3;
+    background-color: #2196F355;
 }
 
 .prediction {
@@ -179,4 +179,13 @@ input:checked + .slider:before {
 
 .tooltip {
     width: 360px;
+}
+
+.placeholder {
+    height: 224px;
+    margin: 0 0 24px 0;
+    background-image: url(../assets/chartjs-logo.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50%;
 }
