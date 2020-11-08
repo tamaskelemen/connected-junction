@@ -491,7 +491,7 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
             if (unencrumbed_price != '' && unencrumbed_price != ' ') {
                 markup += "<p class='unencumberedSalesPrice'>Unencumbered price: " + unencrumbed_price + "</p>";
             }
-            markup += "<img class='estate-photo' src=''>";
+            markup += "<img class='estate-photo' src='' alt='No image is available' width='300' height='200'>";
             markup += "</div>";
             markup = markup.replace(/NaN/g, '');
             L.circle(
@@ -534,8 +534,9 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                     }
 
                     $.get("http://35.205.22.186/api/estatePhoto?objectId=" + data.objectId, function (result) {
-                        // ide dolgozz
-                        // console.log($(this));
+                        if (result.url != null) {
+                            $(".estate-photo").attr("src", result.url)
+                        }
                     });
 
                     $.getJSON("http://35.205.22.186/api/estatePredictions?objectId=" + data.objectId, function (result) {
