@@ -177,3 +177,6 @@ input:checked + .slider:before {
     color: blue;
 }
 
+.tooltip {
+    width: 360px;
+}
