@@ -1,16 +1,8 @@
 package com.junction.rootkicskacsa.backend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junction.rootkicskacsa.backend.model.RegionGrowthRate;
-import com.junction.rootkicskacsa.backend.model.WaterLastYear;
-import com.junction.rootkicskacsa.backend.model.WaterOverall;
-import com.junction.rootkicskacsa.backend.model.ElectricityLastyear;
-import com.junction.rootkicskacsa.backend.model.ElectricityOverall;
-import com.junction.rootkicskacsa.backend.repository.ElectricityLastyearRepository;
-import com.junction.rootkicskacsa.backend.repository.ElectricityOverallRepository;
-import com.junction.rootkicskacsa.backend.repository.RegionGrowthRateRepository;
-import com.junction.rootkicskacsa.backend.repository.WaterLastYearRepository;
-import com.junction.rootkicskacsa.backend.repository.WaterOverallRepository;
+import com.junction.rootkicskacsa.backend.model.*;
+import com.junction.rootkicskacsa.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.geojson.GeoJsonObject;
@@ -31,6 +23,7 @@ public class CSVDataLoaderService {
     private final WaterLastYearRepository waterLastYearRepository;
     private final ElectricityLastyearRepository electricityLastyearRepository;
     private final ElectricityOverallRepository electricityOverallRepository;
+    private final HeatLastYearRepository heatLastYearRepository;
 
     private final ObjectMapper mapper;
 
@@ -138,6 +131,28 @@ public class CSVDataLoaderService {
     @SneakyThrows
     private ElectricityOverall csvToElectricityOverall(String[] data) {
         return ElectricityOverall.builder()
+                .name(data[0])
+                .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
+                .value(Double.valueOf(data[2]))
+                .build();
+    }
+
+    @Transactional
+    @SneakyThrows
+    public void loadHeatLastYear() {
+        heatLastYearRepository.deleteAll();
+        File file = ResourceUtils.getFile("classpath:data/regions/heat_lastyear.csv");
+        Path path = file.toPath();
+        Files.readAllLines(path)
+                .stream()
+                .map(line -> line.split(";"))
+                .map(this::csvToHeatLastYear)
+                .forEach(heatLastYearRepository::save);
+    }
+
+    @SneakyThrows
+    private HeatLastYear csvToHeatLastYear(String[] data) {
+        return HeatLastYear.builder()
                 .name(data[0])
                 .geoJson(mapper.readValue(data[1], GeoJsonObject.class))
                 .value(Double.valueOf(data[2]))
