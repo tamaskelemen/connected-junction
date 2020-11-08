@@ -32,7 +32,7 @@ var categories = {},
 ;
 
 
-var layersControl = L.control.layers(null, null).addTo(mapview);
+var layersControl = L.control.layers(null, null,{collapsed:false}).addTo(mapview);
 
 /**
  * GET Growth rate with geo coords
@@ -450,7 +450,7 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 unencrumbed_price = Math.round(item.unencumberedSalesPrice['@value']).toFixed(0) + ' ' + item.unencumberedSalesPrice['@currency'];
             }
 
-            var markup = "<div>";
+            var markup = "<div class='tooltip'>";
 
             if (energy_class != '' && energy_class != ' ') {
                 markup += "<p class='buildingEnergyClass'>Energy class: " + energy_class + "</p>";
@@ -491,7 +491,7 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
             if (unencrumbed_price != '' && unencrumbed_price != ' ') {
                 markup += "<p class='unencumberedSalesPrice'>Unencumbered price: " + unencrumbed_price + "</p>";
             }
-
+            markup += "<img class='estate-photo' src='' alt='No image is available' width='300' height='200'>";
             markup += "</div>";
             markup = markup.replace(/NaN/g, '');
             L.circle(
@@ -533,7 +533,14 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                         $('.' + key + ' span:nth-child(2)').text(value);
                     }
 
+                    $.get("http://35.205.22.186/api/estatePhoto?objectId=" + data.objectId, function (result) {
+                        if (result.url != null) {
+                            $(".estate-photo").attr("src", result.url)
+                        }
+                    });
+
                     $.getJSON("http://35.205.22.186/api/estatePredictions?objectId=" + data.objectId, function (result) {
+                        console.log(123);
                         for (const [key, object] of Object.entries(result)) {
                             if (object.value != null) {
                                 object.value *= 100;

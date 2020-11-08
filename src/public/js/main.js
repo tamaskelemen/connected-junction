@@ -36,7 +36,7 @@ var categories = {},
 ;
 
 
-var layersControl = L.control.layers(null, null).addTo(mapview);
+var layersControl = L.control.layers(null, null,{collapsed:false}).addTo(mapview);
 
 setBaseYearsChart();
 
