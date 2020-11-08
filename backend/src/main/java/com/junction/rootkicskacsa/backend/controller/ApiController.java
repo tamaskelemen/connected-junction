@@ -182,12 +182,23 @@ public class ApiController {
 
     @GetMapping(path = "/estatePredictions", produces = "application/json")
     public EstatePredictions getEstatePredictions(@RequestParam Long objectId) {
-        return estatePredictionService.getEstatePredictions(objectId);
+        try {
+            return estatePredictionService.getEstatePredictions(objectId);
+        } catch (Exception ex) {
+            log.error("Failed to query estate prediction data", ex);
+            throw new ApiException();
+        }
     }
 
-    @GetMapping(path = "/estatePhoto", produces = "text/plain")
+    @GetMapping(path = "/estatePhoto", produces = "application/json")
     public String getEstatePhotoUrl(@RequestParam Long objectId) {
-        Optional<EstatePhoto> estatePhoto = estateRepository.getEstatePhoto(objectId);
-        return estatePhoto.map(EstatePhoto::getUrl).orElse(null);
+        try {
+            Optional<EstatePhoto> estatePhoto = estateRepository.getEstatePhoto(objectId);
+            String url = estatePhoto.map(EstatePhoto::getUrl).orElse(null);
+            return String.format("{\"url\": %s}", url != null ? "\"" + url + "\"" : null);
+        } catch (Exception ex) {
+            log.error("Failed to query estate photo url data", ex);
+            throw new ApiException();
+        }
     }
 }
