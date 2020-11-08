@@ -118,7 +118,8 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
             && (item.coordinates.Latitude != null)
             && (item.coordinates.Longitude != null)
         ) {
-            var energy_class = '',
+            var year = '',
+                energy_class = '',
                 plan = '',
                 coating = '',
                 rooms = '',
@@ -128,6 +129,9 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 price = '',
                 unencrumbed_price = '';
 
+            if (item.buildingYearOfFirstUse != null && item.buildingYearOfFirstUse != 0) {
+                year = item.buildingYearOfFirstUse;
+            }
 
             if (item.buildingEnergyClass != null && item.buildingEnergyClass['@class'] != null) {
                 energy_class = item.buildingEnergyClass['@class'];
@@ -181,6 +185,10 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                 markup += "<p class='buildingEnergyClass'>Energy class: " + energy_class + "</p>";
             }
 
+            if (year != '' && year != ' ') {
+                markup += "<p class='buildingEnergyClass'>Year of first use: " + year+ "</p>";
+            }
+
             if (plan != '' && plan != ' ') {
                 markup += "<p class='buildingPlanSituation'>Plan: " + plan + "</p>";
             }
@@ -228,6 +236,7 @@ $.getJSON("http://35.205.22.186/api/estatesSimplified", function (data) {
                     data: {
                         objectId: item.objectId,
                         buildingEnergyClass: energy_class,
+                        buildingYearOfFirstUse: year,
                         buildingPlanSituation: plan,
                         housingCoating: coating,
                         housingNumberOfRooms: rooms,
