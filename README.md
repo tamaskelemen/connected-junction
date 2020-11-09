@@ -21,3 +21,6 @@ Through our solution, investors can locate fast- and slow-growing areas, potenti
 On the technical side, our approach utilizes the data provided by the organizers through a re-usable pipeline - which we data engineered to hell - and is
 hosted through google cloud platform through a PostgreSQL database and a Spring boot middleware to our JavaScript-based frontend.
 We provide a flexible public API for data scientists, to freely contribute to, and to do any kind of their magic using it.
+  
+    
+    https://connected.hackjunction.com/
